@@ -4,50 +4,42 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
-  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, Role } from './dto/create-user.dto';
-import { UpdateUserDro } from './dto/update-user.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get() //GET /users
-  findAll(@Query('role') role?: Role) {
-    return this.usersService.findAll(role);
+  @Post()
+  create(@Body() createUserDto: Prisma.UserCreateInput) {
+    return this.usersService.create(createUserDto);
   }
 
-  @Get('interns') //GET /users/interns
-  findAllInterns() {
-    return [];
+  @Get()
+  findAll(@Query('sort') sort?: 'name', @Query('type') type?: 'asc' | 'desc') {
+    return this.usersService.findAll(sort, type);
   }
 
-  @Get(':id') //GET /users/:id
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(id);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(+id);
   }
 
-  @Post() //POST /users
-  create(@Body(ValidationPipe) user: CreateUserDto) {
-    return this.usersService.create(user);
-  }
-
-  @Patch(':id') //PATCH /users/:id
+  @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) userUpdate: UpdateUserDro,
+    @Param('id') id: string,
+    @Body() updateArticleDto: Prisma.UserUpdateInput,
   ) {
-    return this.usersService.update(id, userUpdate);
+    return this.usersService.update(+id, updateArticleDto);
   }
 
-  @Delete(':id') //DELETE /users/:id
-  delete(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.delete(id);
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(+id);
   }
 }

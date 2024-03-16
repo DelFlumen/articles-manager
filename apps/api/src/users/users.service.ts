@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto, Role } from './dto/create-user.dto';
-import { UpdateUserDro } from './dto/update-user.dto';
+import { Injectable } from '@nestjs/common';
+import { DatabaseService } from 'src/database/database.service';
+import { Prisma, Role } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -37,50 +37,46 @@ export class UsersService {
     },
   ];
 
-  findAll(role?: Role) {
-    if (role) {
-      const users = this.users.filter((user) => user.role === role);
-      if (!users.length)
-        throw new NotFoundException('Users With This Role Not Found');
-      return this.users.filter((user) => user.role === role);
-    }
-    return this.users;
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  async create(createUserDto: Prisma.UserCreateInput) {
+    return this.databaseService.user.create({ data: createUserDto });
   }
 
-  findOne(id: number) {
-    const user = this.users.find((user) => user.id === id);
-
-    if (!user) throw new NotFoundException('User Not Found');
-
-    return this.users.find((user) => user.id === id);
+  async findAll(sort?: 'name' | 'date', type?: 'asc' | 'desc') {
+    return sort && type
+      ? this.databaseService.user.findMany({
+          orderBy: [
+            {
+              [sort]: type,
+            },
+          ],
+        })
+      : this.databaseService.user.findMany();
   }
 
-  create(user: CreateUserDto) {
-    const usersByHighestId = [...this.users].sort((a, b) => b.id - a.id);
-    const newUser = {
-      id: usersByHighestId[0].id + 1,
-      ...user,
-    };
-    this.users.push(newUser);
-    return newUser;
-  }
-
-  update(id: number, updatedUser: UpdateUserDro) {
-    this.users = this.users.map((user) => {
-      if (user.id === id) {
-        return { ...user, ...updatedUser };
-      }
-      return user;
+  async findOne(id: number) {
+    return this.databaseService.user.findUnique({
+      where: {
+        id,
+      },
     });
-
-    return this.findOne(id);
   }
 
-  delete(id: number) {
-    const removedUser = this.findOne(id);
+  async update(id: number, updateUserDto: Prisma.UserUpdateInput) {
+    return this.databaseService.user.update({
+      where: {
+        id,
+      },
+      data: updateUserDto,
+    });
+  }
 
-    this.users = this.users.filter((user) => user.id !== id);
-
-    return removedUser;
+  async remove(id: number) {
+    return this.databaseService.user.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
