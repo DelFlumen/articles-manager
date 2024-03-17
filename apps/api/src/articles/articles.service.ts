@@ -14,6 +14,14 @@ export class ArticlesService {
     const itemsPerPage = 10;
     const offset = (page - 1) * itemsPerPage;
 
+    const baseQuery = {
+      skip: offset,
+      take: itemsPerPage,
+      include: {
+        author: true,
+      },
+    };
+
     const query: {
       orderBy?: {
         [key: string]: 'asc' | 'desc';
@@ -23,16 +31,12 @@ export class ArticlesService {
     } =
       sort && type
         ? {
+            ...baseQuery,
             orderBy: {
               [sort]: type,
             },
-            skip: offset,
-            take: itemsPerPage,
           }
-        : {
-            skip: offset,
-            take: itemsPerPage,
-          };
+        : baseQuery;
 
     return this.databaseService.article.findMany(query);
   }
