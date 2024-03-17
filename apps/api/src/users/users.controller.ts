@@ -10,7 +10,9 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Prisma } from '@prisma/client';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -20,11 +22,13 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @SkipThrottle({ default: false })
   @Get()
   findAll(@Query('sort') sort?: 'name', @Query('type') type?: 'asc' | 'desc') {
     return this.usersService.findAll(sort, type);
   }
 
+  @Throttle({ short: { ttl: 1000, limit: 1 } })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
