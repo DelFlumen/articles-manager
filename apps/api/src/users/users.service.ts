@@ -44,29 +44,26 @@ export class UsersService {
   }
 
   async findAll(role?: Role, sort?: 'name' | 'date', type?: 'asc' | 'desc') {
-    if (sort && type) {
-      return this.databaseService.user.findMany({
-        where: role
-          ? {
-              role,
-            }
-          : {},
-        orderBy: [
-          {
-            [sort]: type,
-          },
-        ],
-        include: { articles: true },
-      });
-    }
-    return this.databaseService.user.findMany({
+    const baseQuery = {
       where: role
         ? {
             role,
           }
         : {},
       include: { articles: true },
-    });
+    };
+
+    if (sort && type) {
+      return this.databaseService.user.findMany({
+        ...baseQuery,
+        orderBy: [
+          {
+            [sort]: type,
+          },
+        ],
+      });
+    }
+    return this.databaseService.user.findMany(baseQuery);
   }
 
   async findOne(id: number) {
