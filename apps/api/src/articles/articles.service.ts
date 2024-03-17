@@ -10,16 +10,31 @@ export class ArticlesService {
     return this.databaseService.article.create({ data: createArticleDto });
   }
 
-  async findAll(sort?: 'title' | 'date', type?: 'asc' | 'desc') {
-    return sort && type
-      ? this.databaseService.article.findMany({
-          orderBy: [
-            {
+  async findAll(page: number, sort?: 'title' | 'date', type?: 'asc' | 'desc') {
+    const itemsPerPage = 10;
+    const offset = (page - 1) * itemsPerPage;
+
+    const query: {
+      orderBy?: {
+        [key: string]: 'asc' | 'desc';
+      };
+      skip: number;
+      take: number;
+    } =
+      sort && type
+        ? {
+            orderBy: {
               [sort]: type,
             },
-          ],
-        })
-      : this.databaseService.article.findMany();
+            skip: offset,
+            take: itemsPerPage,
+          }
+        : {
+            skip: offset,
+            take: itemsPerPage,
+          };
+
+    return this.databaseService.article.findMany(query);
   }
 
   async findOne(id: number) {
