@@ -23,7 +23,7 @@ export class ArticlesController {
   @Get()
   findAll(
     @Query('page') page: number = 1,
-    @Query('sort') sort?: 'title' | 'date',
+    @Query('sort') sort?: 'title' | 'createdAt',
     @Query('type') type?: 'asc' | 'desc',
   ) {
     return this.articlesService.findAll(page, sort, type);

@@ -10,7 +10,11 @@ export class ArticlesService {
     return this.databaseService.article.create({ data: createArticleDto });
   }
 
-  async findAll(page: number, sort?: 'title' | 'date', type?: 'asc' | 'desc') {
+  async findAll(
+    page: number,
+    sort?: 'title' | 'createdAt',
+    type?: 'asc' | 'desc',
+  ) {
     const itemsPerPage = 10;
     const offset = (page - 1) * itemsPerPage;
 

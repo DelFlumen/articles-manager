@@ -102,11 +102,11 @@ const Gallery = () => {
       <Stack direction="column" align="center" spacing={6}>
         <FormControl maxWidth="30%" mb="1rem">
           <FormLabel>Sort</FormLabel>
-          <Select value={sortBy} onChange={handleSortChange}>
+          <Select value={`${sortBy},${sortOrder}`} onChange={handleSortChange}>
             <option value="title,asc">Title (A-Z)</option>
             <option value="title,desc">Title (Z-A)</option>
-            <option value="date,asc">Oldest to Newest</option>
-            <option value="date,desc">Newest to Oldest</option>
+            <option value="createdAt,asc">Oldest to Newest</option>
+            <option value="createdAt,desc">Newest to Oldest</option>
           </Select>
         </FormControl>
         {isLoading && <span>Loading...</span>}
