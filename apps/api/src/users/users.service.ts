@@ -44,15 +44,19 @@ export class UsersService {
   }
 
   async findAll(sort?: 'name' | 'date', type?: 'asc' | 'desc') {
-    return sort && type
-      ? this.databaseService.user.findMany({
-          orderBy: [
-            {
-              [sort]: type,
-            },
-          ],
-        })
-      : this.databaseService.user.findMany();
+    if (sort && type) {
+      return this.databaseService.user.findMany({
+        orderBy: [
+          {
+            [sort]: type,
+          },
+        ],
+        include: { articles: true },
+      });
+    }
+    return this.databaseService.user.findMany({
+      include: { articles: true },
+    });
   }
 
   async findOne(id: number) {
@@ -60,6 +64,7 @@ export class UsersService {
       where: {
         id,
       },
+      include: { articles: true },
     });
   }
 
