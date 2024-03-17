@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
 
 @SkipThrottle()
@@ -24,8 +24,12 @@ export class UsersController {
 
   @SkipThrottle({ default: false })
   @Get()
-  findAll(@Query('sort') sort?: 'name', @Query('type') type?: 'asc' | 'desc') {
-    return this.usersService.findAll(sort, type);
+  findAll(
+    @Query('role') role?: Role,
+    @Query('sort') sort?: 'name',
+    @Query('type') type?: 'asc' | 'desc',
+  ) {
+    return this.usersService.findAll(role, sort, type);
   }
 
   @Throttle({ short: { ttl: 1000, limit: 1 } })

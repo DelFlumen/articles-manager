@@ -43,9 +43,14 @@ export class UsersService {
     return this.databaseService.user.create({ data: createUserDto });
   }
 
-  async findAll(sort?: 'name' | 'date', type?: 'asc' | 'desc') {
+  async findAll(role?: Role, sort?: 'name' | 'date', type?: 'asc' | 'desc') {
     if (sort && type) {
       return this.databaseService.user.findMany({
+        where: role
+          ? {
+              role,
+            }
+          : {},
         orderBy: [
           {
             [sort]: type,
@@ -55,6 +60,11 @@ export class UsersService {
       });
     }
     return this.databaseService.user.findMany({
+      where: role
+        ? {
+            role,
+          }
+        : {},
       include: { articles: true },
     });
   }
