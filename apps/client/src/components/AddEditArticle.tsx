@@ -10,6 +10,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import { ArticleInfo } from './Article';
 
 type FormValues = {
@@ -23,6 +24,7 @@ const AddEditArticle = ({
   articleInfo?: Omit<ArticleInfo, 'createdAt' | 'authorName'>;
 }) => {
   const { id, title, content } = articleInfo ?? {};
+  const navigate = useNavigate();
 
   const handleSubmit = async (values: { title: string; content: string }) => {
     try {
@@ -56,6 +58,9 @@ const AddEditArticle = ({
         duration: 2000,
         isClosable: true,
       });
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
     },
     onError: (error) => {
       if (error instanceof Error && error.message) {
