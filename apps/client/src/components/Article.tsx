@@ -11,6 +11,7 @@ import {
   Button,
   Box,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 
 export type ArticleInfo = {
   id: number;
@@ -58,11 +59,13 @@ const Article = ({ articleInfo }: { articleInfo: ArticleInfo }) => {
         </Stack>
       </CardBody>
       <Divider />
-      <CardFooter justify="flex-end">
+      <CardFooter justify="flex-end" minH={15}>
         <ButtonGroup spacing="2">
-          <Button variant="solid" colorScheme="gray">
-            Edit
-          </Button>
+          <Link to={`edit/${id}`}>
+            <Button variant="solid" colorScheme="gray">
+              Edit
+            </Button>
+          </Link>
           <Button variant="ghost" colorScheme="red">
             Delete
           </Button>

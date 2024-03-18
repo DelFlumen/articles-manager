@@ -9,32 +9,47 @@ import {
   Box,
   useToast,
 } from '@chakra-ui/react';
-import { useMutation, useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router-dom';
-import { ArticleInfo } from './Article';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type FormValues = {
   title: string;
   content: string;
 };
 
-const AddEditArticle = ({
-  articleInfo,
-}: {
-  articleInfo?: Omit<ArticleInfo, 'createdAt' | 'authorName'>;
-}) => {
-  const { id, title, content } = articleInfo ?? {};
+const fetchArticle = async (id: string) => {
+  const response = await fetch(`/api/articles/${id}`);
+  console.log({ response });
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
+const AddEditArticle: React.FC = () => {
   const navigate = useNavigate();
+  const { articleId } = useParams();
+
+  const { data, isLoading, isError } = useQuery(
+    ['article', articleId],
+    () => {
+      if (articleId) return fetchArticle(articleId);
+    },
+    {
+      enabled: !!articleId, // Enable only when articleId exists
+    },
+  );
 
   const handleSubmit = async (values: { title: string; content: string }) => {
     try {
       const requestOptions = {
-        method: articleInfo ? 'PATCH' : 'POST',
+        method: articleId ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...values, authorId: 2 }),
       };
 
-      const url = articleInfo ? `/api/articles/${id}` : `/api/articles`;
+      const url = articleId ? `/api/articles/${articleId}` : `/api/articles`;
 
       const response = await fetch(url, requestOptions);
 
@@ -51,6 +66,7 @@ const AddEditArticle = ({
 
   const mutation = useMutation(handleSubmit, {
     onSuccess: () => {
+      queryClient.invalidateQueries('article');
       queryClient.invalidateQueries('articles');
       toast({
         title: 'Article saved successfully.',
@@ -78,32 +94,39 @@ const AddEditArticle = ({
   return (
     <Flex justifyContent="center">
       <Box minW="70%">
-        <Formik<FormValues>
-          initialValues={{ title: title || '', content: content || '' }}
-          onSubmit={(values, { resetForm }) => {
-            mutation.mutate(values);
-            resetForm();
-          }}
-        >
-          <Form>
-            <FormControl>
-              <FormLabel htmlFor="title">Title</FormLabel>
-              <Field as={Input} name="title" id="title" />
-            </FormControl>
-            <FormControl mt={4}>
-              <FormLabel htmlFor="content">Content</FormLabel>
-              <Field as={Textarea} name="content" id="content" />
-            </FormControl>
-            <Button
-              mt={4}
-              colorScheme="teal"
-              isLoading={mutation.isLoading}
-              type="submit"
-            >
-              Save
-            </Button>
-          </Form>
-        </Formik>
+        {isError && <span>Error fetching data</span>}
+        {isLoading ? (
+          <span>Loading...</span>
+        ) : (
+          <Formik<FormValues>
+            initialValues={{
+              title: data?.title || '',
+              content: data?.content || '',
+            }}
+            onSubmit={(values) => {
+              mutation.mutate(values);
+            }}
+          >
+            <Form>
+              <FormControl>
+                <FormLabel htmlFor="title">Title</FormLabel>
+                <Field as={Input} name="title" id="title" />
+              </FormControl>
+              <FormControl mt={4}>
+                <FormLabel htmlFor="content">Content</FormLabel>
+                <Field as={Textarea} name="content" id="content" />
+              </FormControl>
+              <Button
+                mt={4}
+                colorScheme="teal"
+                isLoading={mutation.isLoading}
+                type="submit"
+              >
+                Save
+              </Button>
+            </Form>
+          </Formik>
+        )}
       </Box>
     </Flex>
   );

@@ -27,7 +27,7 @@ const fetchArticles = async (
   sortOrder: string,
 ) => {
   const response = await fetch(
-    `api/articles?page=${page}&sort=${sortBy}&type=${sortOrder}`,
+    `/api/articles?page=${page}&sort=${sortBy}&type=${sortOrder}`,
   );
   if (!response.ok) {
     throw new Error('Network response was not ok');
@@ -37,16 +37,16 @@ const fetchArticles = async (
 
 const Gallery = () => {
   const [page, setPage] = useState(1);
-  const [sortBy, setSortBy] = useState('title');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState('desc');
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const { page, sort, type } = queryString.parse(location.search);
     setPage(page ? parseInt(page as string, 10) : 1);
-    setSortBy(sort ? (sort as string) : 'title');
-    setSortOrder(type ? (type as string) : 'asc');
+    setSortBy(sort ? (sort as string) : 'createdAt');
+    setSortOrder(type ? (type as string) : 'desc');
   }, [location.search]);
 
   const { data, isLoading, isError } = useQuery(
@@ -62,16 +62,6 @@ const Gallery = () => {
     });
     navigate({ search: queryParams });
   }, [navigate, page, sortBy, sortOrder]);
-
-  // const handleSort = (sortBy: string) => {
-  //   if (sortBy === sortBy) {
-  //     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-  //   } else {
-  //     setSortBy(sortBy);
-  //     setSortOrder('asc');
-  //   }
-  //   setPage(1);
-  // };
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -109,21 +99,26 @@ const Gallery = () => {
             <option value="createdAt,desc">Newest to Oldest</option>
           </Select>
         </FormControl>
-        {isLoading && <span>Loading...</span>}
         {isError && <span>Error fetching data</span>}
-        {data?.map(({ id, title, content, createdAt, author }: ArticleType) => (
-          <Article
-            key={id}
-            articleInfo={{
-              id,
-              title,
-              content,
-              createdAt,
-              authorName:
-                typeof author.name === 'string' ? author.name : 'unknown',
-            }}
-          />
-        ))}
+        {isLoading ? (
+          <span>Loading...</span>
+        ) : (
+          data?.map(
+            ({ id, title, content, createdAt, author }: ArticleType) => (
+              <Article
+                key={id}
+                articleInfo={{
+                  id,
+                  title,
+                  content,
+                  createdAt,
+                  authorName:
+                    typeof author.name === 'string' ? author.name : 'unknown',
+                }}
+              />
+            ),
+          ) || null
+        )}
         {data?.length && (
           <Stack direction="row" spacing={4} mt={4}>
             <IconButton
