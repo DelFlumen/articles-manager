@@ -6,8 +6,11 @@ import Login from './components/Login';
 import Gallery from './components/Gallery';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Header from './components/Header';
+import { useAuth } from './hooks/useAuth';
 
 const App: React.FC = () => {
+  const { isAdmin, user } = useAuth();
+
   const queryClient = new QueryClient();
 
   return (
@@ -18,9 +21,13 @@ const App: React.FC = () => {
             <Header />
             <Routes>
               <Route path="/" element={<Gallery />} />
-              <Route path="/add" element={<AddEditArticle />} />
-              <Route path="/edit/:articleId" element={<AddEditArticle />} />
-              <Route path="/login" element={<Login />} />
+              {isAdmin && (
+                <>
+                  <Route path="/add" element={<AddEditArticle />} />
+                  <Route path="/edit/:articleId" element={<AddEditArticle />} />
+                </>
+              )}
+              {!user && <Route path="/login" element={<Login />} />}
             </Routes>
           </Container>
         </Router>

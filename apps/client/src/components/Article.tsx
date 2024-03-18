@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export type ArticleInfo = {
   id: number;
@@ -23,12 +24,23 @@ export type ArticleInfo = {
   authorName: string;
 };
 
-const deleteArticle = async (articleId: number) => {
+const deleteArticle = async (articleId: number, token: string) => {
+  console.log(token);
+
   try {
-    await fetch(`/api/articles/${articleId}`, {
+    const response = await fetch(`/api/articles/${articleId}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete article.');
+    }
   } catch (error) {
+    console.log('Failed to delete article');
+
     throw new Error('Failed to delete article.');
   }
 };
@@ -37,8 +49,10 @@ const Article = ({ articleInfo }: { articleInfo: ArticleInfo }) => {
   const { id, title, content, createdAt, authorName } = articleInfo;
   const queryClient = useQueryClient();
   const toast = useToast();
+  const { isAdmin, user, token } = useAuth();
+  console.log({ isAdmin, user, token });
 
-  const mutation = useMutation(deleteArticle, {
+  const mutation = useMutation(() => deleteArticle(id, token), {
     onSuccess: () => {
       // Invalidate the query after deletion to refetch the updated list of articles
       queryClient.invalidateQueries('articles');
@@ -97,22 +111,24 @@ const Article = ({ articleInfo }: { articleInfo: ArticleInfo }) => {
         </Stack>
       </CardBody>
       <Divider />
-      <CardFooter justify="flex-end" minH={15}>
-        <ButtonGroup spacing="2">
-          <Link to={`edit/${id}`}>
-            <Button variant="solid" colorScheme="gray">
-              Edit
+      {isAdmin ? (
+        <CardFooter justify="flex-end" minH={15}>
+          <ButtonGroup spacing="2">
+            <Link to={`edit/${id}`}>
+              <Button variant="solid" colorScheme="gray">
+                Edit
+              </Button>
+            </Link>
+            <Button
+              variant="ghost"
+              colorScheme="red"
+              onClick={() => mutation.mutate()}
+            >
+              Delete
             </Button>
-          </Link>
-          <Button
-            variant="ghost"
-            colorScheme="red"
-            onClick={() => mutation.mutate(id)}
-          >
-            Delete
-          </Button>
-        </ButtonGroup>
-      </CardFooter>
+          </ButtonGroup>
+        </CardFooter>
+      ) : null}
     </Card>
   );
 };

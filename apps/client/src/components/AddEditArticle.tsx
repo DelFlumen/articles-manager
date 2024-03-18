@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 type FormValues = {
   title: string;
@@ -31,6 +32,7 @@ const AddEditArticle: React.FC = () => {
   const navigate = useNavigate();
   const { articleId } = useParams();
   const queryClient = useQueryClient();
+  const { token } = useAuth();
   const toast = useToast();
 
   const { data, isLoading, isError } = useQuery(
@@ -47,7 +49,10 @@ const AddEditArticle: React.FC = () => {
     try {
       const requestOptions = {
         method: articleId ? 'PATCH' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ ...values, authorId: 2 }),
       };
 

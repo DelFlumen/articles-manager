@@ -7,17 +7,40 @@ import {
   Box,
   Flex,
 } from '@chakra-ui/react';
-import { Formik, Form, Field, FieldProps } from 'formik';
+import { Formik, Form, Field, FieldProps, FormikHelpers } from 'formik';
+import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (
+    values: { email: string; password: string },
+    actions: FormikHelpers<{
+      email: string;
+      password: string;
+    }>,
+  ) => {
+    try {
+      login(values);
+      actions.resetForm();
+      navigate('/');
+    } catch (error) {
+      console.error('Login error:', error);
+      // Handle login error
+    } finally {
+      // Set submitting state to false
+      actions.setSubmitting(false);
+    }
+  };
   return (
     <Flex justifyContent="center">
       <Box minW="20rem">
         <Formik
           initialValues={{ email: '', password: '' }}
           onSubmit={(values, actions) => {
-            // Handle form submission
-            console.log(values);
+            handleSubmit(values, actions);
             actions.setSubmitting(false);
           }}
         >

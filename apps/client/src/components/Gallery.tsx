@@ -12,14 +12,7 @@ import { useQuery } from 'react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 import queryString from 'query-string';
 import Article from './Article';
-
-type ArticleType = {
-  id: number;
-  title: string;
-  content: string;
-  author: Record<string, number | string | unknown[]>;
-  createdAt: string;
-};
+import { ArticleType } from './AuthProvider';
 
 const fetchArticles = async (
   page: number,

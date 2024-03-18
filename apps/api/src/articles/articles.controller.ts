@@ -31,6 +31,7 @@ export class ArticlesController {
     return this.articlesService.findAll(page, sort, type);
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.articlesService.findOne(+id);
