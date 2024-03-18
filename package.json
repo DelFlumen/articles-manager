@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "@nestjs/mapped-types": "*"
+    "@nestjs/mapped-types": "*",
+    "vercel": "^33.6.1"
   },
   "devDependencies": {
     "turbo": "^1.10.4"
@@ -10,7 +11,6 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
-    "build": "turbo run build",
     "start": "node -e \"const fs = require('fs'); const dirs = fs.readdirSync(process.cwd()); console.log('Child directories:', dirs); console.log('Current working directory:', process.cwd());\" && node apps/api/dist/main",
     "postinstall": "prisma generate --schema=/apps/api/prisma/schema.prisma"
   }
