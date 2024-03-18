@@ -1,38 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   ChakraProvider,
-  Tabs,
-  TabIndicator,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   Container,
-  Center,
   // useToast,
 } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import AddEditArticle from './components/AddEditArticle';
 import LoginModal from './components/LoginModal';
 import Gallery from './components/Gallery';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Header from './components/Header';
 
 const App: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
   const queryClient = new QueryClient();
-
-  const handleLogin = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
 
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider>
-        <Container minWidth="100vw">
+        <Router>
+          {/* <Flex justify="center" width="100%" height="100%"> */}
+          <Container minWidth="100%" px={8} margin="auto">
+            {/* <Container p={0} maxWidth="unset"> */}
+            <Header />
+            <Routes>
+              <Route path="/" element={<Gallery />} />
+              <Route path="/add" element={<AddEditArticle />} />
+              <Route path="/login" element={<LoginModal />} />
+            </Routes>
+          </Container>
+          {/* </Flex> */}
+        </Router>
+        {/* <Container minWidth="100vw">
           <Tabs variant="unstyled">
             <Center>
               <TabList>
@@ -57,7 +55,7 @@ const App: React.FC = () => {
             </TabPanels>
           </Tabs>
           <LoginModal isOpen={isModalOpen} onClose={handleCloseModal} />
-        </Container>
+        </Container> */}
       </ChakraProvider>
     </QueryClientProvider>
   );
