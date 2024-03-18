@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink, useMatch } from 'react-router-dom';
 import { Box, Flex, Text } from '@chakra-ui/react';
 
 const MenuItem = ({
@@ -11,11 +11,16 @@ const MenuItem = ({
   to?: string;
   isLast?: boolean;
 }) => {
+  const isActive = useMatch(to);
+
   return (
-    <Box ml={isLast ? 'auto' : ''} borderBottom="1px solid gray">
-      <Link to={to}>
+    <Box
+      ml={isLast ? 'auto' : ''}
+      borderBottom={isActive ? '2px solid gray' : ''}
+    >
+      <NavLink to={to} style={{ textDecoration: 'none' }}>
         <Text display="block">{children}</Text>
-      </Link>
+      </NavLink>
     </Box>
   );
 };
