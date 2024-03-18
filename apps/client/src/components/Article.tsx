@@ -9,6 +9,7 @@ import {
   Divider,
   ButtonGroup,
   Button,
+  Box,
 } from '@chakra-ui/react';
 
 export type ArticleInfo = {
@@ -21,33 +22,28 @@ export type ArticleInfo = {
 
 const Article = ({ articleInfo }: { articleInfo: ArticleInfo }) => {
   const { id, title, content, createdAt, authorName } = articleInfo;
-  console.log({ createdAt });
-  console.log(typeof createdAt);
-
-  // return (
-  //   <Tr key={id}>
-  //     <Td>{title}</Td>
-  //     <Td>
-  {
-    new Date(createdAt).toLocaleDateString('en-GB', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  }
-  //     </Td>
-  //     <Td>{authorName}</Td>
-  //   </Tr>
-  // );
 
   return (
-    <Card key={id} minW="80%">
+    <Card key={id} minW="80%" maxW="80%" minH="20rem" maxH="20rem">
       <CardBody>
         <CardHeader>
           <Heading size="md">{title}</Heading>
         </CardHeader>
         <Stack ml="5" spacing="3">
-          <Text>{content}</Text>
+          <Box maxH="5rem" overflow="hidden">
+            <Text
+              as="div"
+              css={{
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {content}
+            </Text>
+          </Box>
           <Text color="gray.700" size="sm" ml="auto">
             {authorName}
           </Text>

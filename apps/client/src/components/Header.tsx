@@ -5,17 +5,17 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 const MenuItem = ({
   children,
   to = '/',
-  isLast,
+  isAdd,
 }: {
   children: string;
   to?: string;
-  isLast?: boolean;
+  isAdd?: boolean;
 }) => {
   const isActive = useMatch(to);
 
   return (
     <Box
-      ml={isLast ? 'auto' : ''}
+      mr={isAdd ? 'auto' : ''}
       borderBottom={isActive ? '2px solid gray' : ''}
     >
       <NavLink to={to} style={{ textDecoration: 'none' }}>
@@ -40,10 +40,10 @@ const Header: React.FC = () => {
       color={['primary.700', 'primary.700', 'primary.300', 'primary.300']}
     >
       <MenuItem>Gallery</MenuItem>
-      <MenuItem to="add">Create New Article</MenuItem>
-      <MenuItem to="login" isLast>
-        Log In
+      <MenuItem to="add" isAdd>
+        Create New Article
       </MenuItem>
+      <MenuItem to="login">Log In</MenuItem>
     </Flex>
   );
 };

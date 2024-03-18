@@ -29,10 +29,10 @@ const AddEditArticle = ({
       const requestOptions = {
         method: articleInfo ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ ...values, authorId: 2 }),
       };
 
-      const url = `/api/articles/${id}`;
+      const url = articleInfo ? `/api/articles/${id}` : `/api/articles`;
 
       const response = await fetch(url, requestOptions);
 

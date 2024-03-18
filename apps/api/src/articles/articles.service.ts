@@ -15,7 +15,7 @@ export class ArticlesService {
     sort?: 'title' | 'createdAt',
     type?: 'asc' | 'desc',
   ) {
-    const itemsPerPage = 10;
+    const itemsPerPage = 5;
     const offset = (page - 1) * itemsPerPage;
 
     const baseQuery = {
