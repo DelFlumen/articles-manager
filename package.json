@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "start": "node api/dist/main",
+    "start": "node console.log(process.cwd()); node api/dist/main",
     "postinstall": "prisma generate"
   }
 }
