@@ -10,7 +10,9 @@ import {
   ButtonGroup,
   Button,
   Box,
+  useToast,
 } from '@chakra-ui/react';
+import { useMutation, useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 
 export type ArticleInfo = {
@@ -21,8 +23,44 @@ export type ArticleInfo = {
   authorName: string;
 };
 
+const deleteArticle = async (articleId: number) => {
+  try {
+    await fetch(`/api/articles/${articleId}`, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    throw new Error('Failed to delete article.');
+  }
+};
+
 const Article = ({ articleInfo }: { articleInfo: ArticleInfo }) => {
   const { id, title, content, createdAt, authorName } = articleInfo;
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const mutation = useMutation(deleteArticle, {
+    onSuccess: () => {
+      // Invalidate the query after deletion to refetch the updated list of articles
+      queryClient.invalidateQueries('articles');
+      toast({
+        title: 'Article deleted successfully.',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
+    },
+    onError: (error) => {
+      if (error instanceof Error && error.message) {
+        toast({
+          title: 'An error occurred.',
+          description: error.message,
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    },
+  });
 
   return (
     <Card key={id} minW="80%" maxW="80%" minH="20rem" maxH="20rem">
@@ -66,7 +104,11 @@ const Article = ({ articleInfo }: { articleInfo: ArticleInfo }) => {
               Edit
             </Button>
           </Link>
-          <Button variant="ghost" colorScheme="red">
+          <Button
+            variant="ghost"
+            colorScheme="red"
+            onClick={() => mutation.mutate(id)}
+          >
             Delete
           </Button>
         </ButtonGroup>

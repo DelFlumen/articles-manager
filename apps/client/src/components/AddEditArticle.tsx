@@ -30,6 +30,8 @@ const fetchArticle = async (id: string) => {
 const AddEditArticle: React.FC = () => {
   const navigate = useNavigate();
   const { articleId } = useParams();
+  const queryClient = useQueryClient();
+  const toast = useToast();
 
   const { data, isLoading, isError } = useQuery(
     ['article', articleId],
@@ -60,9 +62,6 @@ const AddEditArticle: React.FC = () => {
       throw new Error('Failed to save article.');
     }
   };
-
-  const queryClient = useQueryClient();
-  const toast = useToast();
 
   const mutation = useMutation(handleSubmit, {
     onSuccess: () => {
