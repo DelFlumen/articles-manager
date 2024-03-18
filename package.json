@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "start": "node -e \"const fs = require('fs'); const dirs = fs.readdirSync(process.cwd()); console.log('Child directories:', dirs); console.log('Current working directory:', process.cwd());\" && node apps/api/dist/main",
-    "postinstall": "prisma generate"
+    "start": "node -e \"const fs = require('fs'); const dirs = fs.readdirSync(process.cwd()); console.log('Child directories:', dirs); console.log('Current working directory:', process.cwd());\" && node /apps/api/dist/main.js",
+    "postinstall": "prisma generate --schema=/apps/api/prisma/schema.prisma"
   }
 }
