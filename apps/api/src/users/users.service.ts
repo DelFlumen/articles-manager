@@ -75,6 +75,15 @@ export class UsersService {
     });
   }
 
+  async findOneByEmail(email: string) {
+    return this.databaseService.user.findUnique({
+      where: {
+        email,
+      },
+      include: { articles: true },
+    });
+  }
+
   async update(id: number, updateUserDto: Prisma.UserUpdateInput) {
     return this.databaseService.user.update({
       where: {

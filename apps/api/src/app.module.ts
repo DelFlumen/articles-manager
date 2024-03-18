@@ -7,9 +7,13 @@ import { ArticlesModule } from './articles/articles.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { MyLoggerModule } from './my-logger/my-logger.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtGuard } from './auth/guards/jwt.guard';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     DatabaseModule,
     ArticlesModule,
@@ -26,6 +30,7 @@ import { MyLoggerModule } from './my-logger/my-logger.module';
       },
     ]),
     MyLoggerModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
@@ -33,6 +38,10 @@ import { MyLoggerModule } from './my-logger/my-logger.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
     },
   ],
 })

@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { Prisma } from '@prisma/client';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('articles')
 export class ArticlesController {
@@ -20,6 +21,7 @@ export class ArticlesController {
     return this.articlesService.create(createArticleDto);
   }
 
+  @Public()
   @Get()
   findAll(
     @Query('page') page: number = 1,

@@ -11,17 +11,20 @@ import {
 import { UsersService } from './users.service';
 import { Prisma, Role } from '@prisma/client';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @SkipThrottle()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Public()
   @Post()
   create(@Body() createUserDto: Prisma.UserCreateInput) {
     return this.usersService.create(createUserDto);
   }
 
+  @Public()
   @SkipThrottle({ default: false })
   @Get()
   findAll(
