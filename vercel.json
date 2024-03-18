@@ -1,6 +1,8 @@
 {
   "version": 2,
-  "github": "https://github.com/DelFlumen/articles-manager",
+  "github": {
+    "enabled": false
+  },
   "builds": [
     {
       "src": "/apps/api/src/main.ts",
