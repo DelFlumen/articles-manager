@@ -10,7 +10,6 @@ import {
   Button,
   Box,
   useToast,
-  Flex,
 } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -82,48 +81,51 @@ const Article = ({ articleInfo }: { articleInfo: ArticleInfo }) => {
         }}
       >
         <CardHeader>
-          <Heading size="md">{title}</Heading>
-        </CardHeader>
-        <Flex direction="column" ml="5" gap="3">
-          <Flex
-            shrink={2}
-            direction="column"
-            justify="space-between"
-            height="10rem"
+          <Heading
+            overflow="hidden"
+            textOverflow="ellipsis"
+            whiteSpace="nowrap"
+            size="md"
           >
-            <Box maxH="5rem" overflow="hidden">
-              <Text
-                as="div"
-                css={{
-                  display: '-webkit-box',
-                  WebkitLineClamp: 3,
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {content}
-              </Text>
-            </Box>
-            <Box ml="auto" mt="auto">
-              <Text color="gray.700" size="sm">
-                author: {authorName}
-              </Text>
-              <Text color="gray.400">
-                {' '}
-                {new Date(createdAt).toLocaleDateString('en-GB', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                })}
-              </Text>
-            </Box>
-          </Flex>
-        </Flex>
+            {title}
+          </Heading>
+        </CardHeader>
+        <Box maxH="5rem" overflow="hidden" ml={5} mb={2}>
+          <Text
+            as="div"
+            css={{
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {content}
+          </Text>
+        </Box>
+        <Box ml="auto" mt="auto">
+          <Text color="gray.700" size="sm">
+            author: {authorName}
+          </Text>
+          <Text color="gray.400">
+            {' '}
+            {new Date(createdAt).toLocaleDateString('en-GB', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+            })}
+          </Text>
+        </Box>
       </CardBody>
       <Divider />
       {isAdmin ? (
-        <CardFooter justify="flex-end" alignItems="center" minH={15}>
+        <CardFooter
+          justify="flex-end"
+          flexShrink={0}
+          alignItems="center"
+          height={14}
+        >
           <ButtonGroup spacing="2">
             <Link to={`edit/${id}`}>
               <Button variant="solid" colorScheme="gray">
