@@ -4,13 +4,13 @@ import {
   CardBody,
   CardFooter,
   Heading,
-  Stack,
   Text,
   Divider,
   ButtonGroup,
   Button,
   Box,
   useToast,
+  Flex,
 } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -25,8 +25,6 @@ export type ArticleInfo = {
 };
 
 const deleteArticle = async (articleId: number, token: string) => {
-  console.log(token);
-
   try {
     const response = await fetch(`/api/articles/${articleId}`, {
       method: 'DELETE',
@@ -39,8 +37,6 @@ const deleteArticle = async (articleId: number, token: string) => {
       throw new Error('Failed to delete article.');
     }
   } catch (error) {
-    console.log('Failed to delete article');
-
     throw new Error('Failed to delete article.');
   }
 };
@@ -49,8 +45,7 @@ const Article = ({ articleInfo }: { articleInfo: ArticleInfo }) => {
   const { id, title, content, createdAt, authorName } = articleInfo;
   const queryClient = useQueryClient();
   const toast = useToast();
-  const { isAdmin, user, token } = useAuth();
-  console.log({ isAdmin, user, token });
+  const { isAdmin, token } = useAuth();
 
   const mutation = useMutation(() => deleteArticle(id, token), {
     onSuccess: () => {
@@ -78,41 +73,57 @@ const Article = ({ articleInfo }: { articleInfo: ArticleInfo }) => {
 
   return (
     <Card key={id} minW="80%" maxW="80%" minH="20rem" maxH="20rem">
-      <CardBody>
+      <CardBody
+        as="div"
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
+      >
         <CardHeader>
           <Heading size="md">{title}</Heading>
         </CardHeader>
-        <Stack ml="5" spacing="3">
-          <Box maxH="5rem" overflow="hidden">
-            <Text
-              as="div"
-              css={{
-                display: '-webkit-box',
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {content}
-            </Text>
-          </Box>
-          <Text color="gray.700" size="sm" ml="auto">
-            {authorName}
-          </Text>
-          <Text color="gray.400" ml="auto">
-            {' '}
-            {new Date(createdAt).toLocaleDateString('en-GB', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-            })}
-          </Text>
-        </Stack>
+        <Flex direction="column" ml="5" gap="3">
+          <Flex
+            shrink={2}
+            direction="column"
+            justify="space-between"
+            height="10rem"
+          >
+            <Box maxH="5rem" overflow="hidden">
+              <Text
+                as="div"
+                css={{
+                  display: '-webkit-box',
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {content}
+              </Text>
+            </Box>
+            <Box ml="auto" mt="auto">
+              <Text color="gray.700" size="sm">
+                author: {authorName}
+              </Text>
+              <Text color="gray.400">
+                {' '}
+                {new Date(createdAt).toLocaleDateString('en-GB', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                })}
+              </Text>
+            </Box>
+          </Flex>
+        </Flex>
       </CardBody>
       <Divider />
       {isAdmin ? (
-        <CardFooter justify="flex-end" minH={15}>
+        <CardFooter justify="flex-end" alignItems="center" minH={15}>
           <ButtonGroup spacing="2">
             <Link to={`edit/${id}`}>
               <Button variant="solid" colorScheme="gray">

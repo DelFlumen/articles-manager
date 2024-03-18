@@ -20,7 +20,6 @@ type FormValues = {
 
 const fetchArticle = async (id: string) => {
   const response = await fetch(`/api/articles/${id}`);
-  console.log({ response });
 
   if (!response.ok) {
     throw new Error('Network response was not ok');

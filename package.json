@@ -2,13 +2,15 @@
   "dependencies": {
     "@nestjs/mapped-types": "*"
   },
-    "devDependencies": {
-        "turbo": "^1.10.4"
-    },
-    "workspaces": [
-        "apps/*"
-    ],
-    "scripts": {
-        "dev": "turbo run dev"
-    }
+  "devDependencies": {
+    "turbo": "^1.10.4"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "node apps/api/dist/main"
+  }
 }
