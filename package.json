@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "start": "node api/dist/main.js",
+    "start": "node -e \"console.log('Current working directory:', process.cwd());\" && node apps/api/dist/main",
     "postinstall": "prisma generate"
   }
 }
