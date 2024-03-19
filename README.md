@@ -3,7 +3,7 @@
 Please follow these steps to run the application localy:
 
 1) Clone the repository using **git clone https://github.com/DelFlumen/articles-manager.git**
-2) Add .env file in the root directory with following variables:
+2) Add .env file in the apps/api with following variables:
    
    DATABASE_URL=<YOUR_POSTGRESQL_DB_URL>
    ACCESS_TOKEN_VALIDITY_DURATION_IN_SEC=86400000
