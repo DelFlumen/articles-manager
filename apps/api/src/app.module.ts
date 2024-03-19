@@ -10,14 +10,14 @@ import { MyLoggerModule } from './my-logger/my-logger.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { ConfigModule } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+// import { ServeStaticModule } from '@nestjs/serve-static';
+// import { join } from 'path';
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'client', 'dist'),
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '../..', 'client', 'dist'),
+    // }),
     ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     DatabaseModule,
